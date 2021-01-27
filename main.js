@@ -209,7 +209,31 @@ class ServiceNowAdapter extends EventEmitter {
      * Note how the object was instantiated in the constructor().
      * get() takes a callback function.
      */
-     this.connector.get(callback);
+     this.connector.get((data, error) => {
+        if (error) {
+          callback(data, error);
+        } 
+        else {
+            if (data.hasOwnProperty('body')) {
+              var bodyData = (JSON.parse(data.body));
+              var changeTicket = [];
+
+              for(var i = 0; i < bodyData.result.length; i++) {
+                var result = (JSON.parse(data.body).result);
+                changeTicket.push({
+                    "change_ticket_number" : result[i].number, 
+                    "active" : result[i].active, 
+                    "priority" : result[i].priority,
+                    "description" : result[i].description, 
+                    "work_start" : result[i].work_start, 
+                    "work_end" : result[i].work_end,
+                    "change_ticket_key" : result[i].sys_id
+                });
+              } 
+            callback(changeTicket, error); 
+            }
+          } 
+      });
   }
 
   /**
@@ -228,7 +252,27 @@ class ServiceNowAdapter extends EventEmitter {
      * Note how the object was instantiated in the constructor().
      * post() takes a callback function.
      */
-     this.connector.post(callback);
+     this.connector.post((data, error) => {
+          if (error) {
+            callback(data, error);
+          } 
+          else {
+            if (data.hasOwnProperty('body')) {
+              var changeTicket = {};
+              var result = (JSON.parse(data.body).result);
+              changeTicket = ({
+                    "change_ticket_number" : result[i].number, 
+                    "active" : result[i].active, 
+                    "priority" : result[i].priority,
+                    "description" : result[i].description, 
+                    "work_start" : result[i].work_start, 
+                    "work_end" : result[i].work_end,
+                    "change_ticket_key" : result[i].sys_id
+                    });
+              callback(changeTicket, error); 
+            } 
+           }            
+        });    
   }
 }
 
