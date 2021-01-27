@@ -113,7 +113,8 @@ class ServiceNowAdapter extends EventEmitter {
    */
   healthcheck(callback) {
       // Initialize return arguments for callback
-
+    let callbackError = null;
+    let callbackData = null;
     this.getRecord((result, error) => {
    /**
     * For this lab, complete the if else conditional
@@ -136,7 +137,7 @@ class ServiceNowAdapter extends EventEmitter {
       */
       this.emitStatus('OFFLINE');
       log.error(this.id + 'ServiceNow: Instance is unavailable.')
-      callback.errorMessage = error;
+      callbackError = error;
    } else {
      /**
       * Write this block.
@@ -150,7 +151,7 @@ class ServiceNowAdapter extends EventEmitter {
       */
       this.emitStatus('ONLINE');
       log.debug('ServiceNow: Instance is available.')
-      callback.responseData = result;
+      callbackData = result;
         }
     });
   }
